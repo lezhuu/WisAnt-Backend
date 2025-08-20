@@ -137,7 +137,7 @@ async def draw_detail_heatmap(sql:str, heat_data_column: str, tool_call_id: Anno
     需要保证sql获取到的数据足够充分, 必须包含表中所有的字段
 
     Args:
-        sql (str): SQL query used to retrieve the data for drawing the detailed heatmap.
+        sql (str): SQL query used to retrieve the data for drawing the detailed heatmap, must start with 'SELECT * ';
         heat_data_column (str): The single column of the heatmap, must be a single number column.
 
     Returns:
