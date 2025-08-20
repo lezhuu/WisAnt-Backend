@@ -1,0 +1,10 @@
+Flask[async]
+gunicorn
+python-dotenv
+openai
+langgraph
+langchain-core
+langchain-openai
+asyncpg
+ipython
+langchain_community

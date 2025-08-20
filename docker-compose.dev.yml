@@ -1,0 +1,61 @@
+services:
+  wisant-poc-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8082:8082
+    working_dir: /app
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    command: python app.py
+    environment:
+      FLASK_DEBUG: "1"
+      PORT: "8082"
+      POSTGRES_HOST: wisant-poc-db
+      POSTGRES_PORT: "5432"
+    depends_on:
+      wisant-poc-db:
+        condition: service_healthy
+    networks:
+      - workspace
+
+  wisant-poc-db:
+    container_name: wisant-poc-db
+    image: postgres:15
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: wisant-poc
+      POSTGRES_PASSWORD: wisant-poc
+      POSTGRES_USER: wisant-poc
+    healthcheck:
+      test: pg_isready -U wisant-poc -h 127.0.0.1
+      interval: 5s
+    networks:
+      - workspace
+
+  pgweb-ant:
+    container_name: pgweb-ant
+    image: sosedoff/pgweb:latest
+    ports:
+      - 8081:8081
+    environment:
+      PGWEB_DATABASE_URL: postgres://wisant-poc:wisant-poc@wisant-poc-db:5432/wisant-poc?sslmode=disable
+    depends_on:
+      wisant-poc-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nc", "-vz", "127.0.0.1", "8081"]
+      interval: 5s
+    networks:
+      - workspace
+
+networks:
+  workspace:
+    external: true
+
