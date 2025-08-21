@@ -3,3 +3,5 @@ __pycache__/
 .venv*
 artifacts/
 data/
+.env
+.DS_Store
